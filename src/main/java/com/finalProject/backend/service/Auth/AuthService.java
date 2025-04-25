@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -49,11 +50,27 @@ public class AuthService {
 
             System.out.println("Authentication: " + authentication);
             if (authentication.isAuthenticated()) {
-                Map<String,String> res = Map.of(
-                        "token", jwtService.generateToken(loginCred.getUsername()),
-                        "username", loginCred.getUsername()
-                );
-                return ResponseEntity.ok(res);
+                Map<String,Object> response = new HashMap<>();
+                Users user = authRepository.findByUsername(loginCred.getUsername());
+                if (user != null){
+
+                    response.put("userId", user.getUserId());
+                    response.put("username", user.getUsername());
+                    response.put("name", user.getName());
+                    response.put("email", user.getEmail());
+                    response.put("imgUrl", user.getImgUrl());
+                    response.put("roleType", user.getRoleType());
+                    response.put("playCount", user.getPlayCount());
+                    response.put("totalRun", user.getTotalRun());
+                    response.put("runRate", user.getRunRate());
+                    response.put("phoneNumber", user.getPhoneNumber());
+                    response.put("role", user.getRole());
+                    response.put("token", jwtService.generateToken(loginCred.getUsername()));
+                }else{
+                    return ResponseEntity.status(404).body("User not found");
+                }
+
+                return ResponseEntity.ok(response);
             }
         } catch (Exception e) {
             System.out.println("Authentication error: " + e.getMessage());

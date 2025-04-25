@@ -1,4 +1,4 @@
-package com.finalProject.backend.controller;
+package com.finalProject.backend.controller.Authentication;
 
 import com.finalProject.backend.model.authModels.LoginModel;
 import com.finalProject.backend.model.authModels.SignupModel;
@@ -21,7 +21,6 @@ public class AuthController {
     public ResponseEntity<?> getAllUsers() {
         return new ResponseEntity<>(authService.getAllUsers(), HttpStatus.OK);
     }
-
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginModel loginCred) {
         return  authService.verifyLogin(loginCred);
@@ -37,4 +36,6 @@ public class AuthController {
             return new ResponseEntity<>("Invalid user data", HttpStatus.BAD_REQUEST);
         }
     }
+
+
 }
